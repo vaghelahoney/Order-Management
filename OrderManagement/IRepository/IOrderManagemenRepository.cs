@@ -13,5 +13,7 @@ namespace OrderManagement.IRepository
 
         Task<bool> Update(Order entity);
 
+        Task<bool> DeleteOrder(int id);
+
     }
 }

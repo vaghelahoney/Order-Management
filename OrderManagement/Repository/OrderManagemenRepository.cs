@@ -40,6 +40,29 @@ namespace OrderManagement.Repository
             return entity;
         }
 
+        public async Task<bool> DeleteOrder(int id)
+        {
+            try
+            {
+                var order = await _appDbContext.Orders.FindAsync(id);
+
+                if (order == null)
+                {
+                    return false;
+                }
+
+                _appDbContext.Orders.Remove(order);
+
+                var result = await _appDbContext.SaveChangesAsync();
+
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         public async Task<IEnumerable<Order>> GetAllAsync(int PageNumber, int PageSize)
         {
 
