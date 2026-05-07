@@ -11,7 +11,7 @@ namespace OrderManagement.IRepository
 
         Task<Order> AddAsync(Order entity);
 
-        Task<bool> Update(Order entity);
+        Task<bool> Update(int id ,Order entity);
 
         Task<bool> DeleteOrder(int id);
 

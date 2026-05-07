@@ -18,39 +18,39 @@ namespace OrderManagement.Repository
 
         public async Task<Order> AddAsync(Order entity)
         {
-            var Oedersave = await _appDbContext.Orders.AddAsync(entity);
-
-            await _appDbContext.SaveChangesAsync();
-
-            OrderItem orders = new OrderItem();
-
-            if (entity.OrderItems.Count() > 0)
+            try
             {
-                for (int i = 0; i < entity.OrderItems.Count(); i++)
-                {
-                    orders.OrderId = Oedersave.Entity.Id;
-                    orders.ProductName = entity.OrderItems[i].ProductName;
-                    orders.Quantity = entity.OrderItems[i].Quantity;
-                    orders.Price = entity.OrderItems[i].Price;
-
-                    await _appDbContext.OrderItems.AddAsync(orders);
-                    await _appDbContext.SaveChangesAsync();
+                if(entity == null)
+                { 
+                    throw new ArgumentNullException(nameof(entity));
                 }
+
+                 await _appDbContext.Orders.AddAsync(entity);
+
+                await _appDbContext.SaveChangesAsync();
+
+                return entity;
             }
-            return entity;
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
         }
 
         public async Task<bool> DeleteOrder(int id)
         {
             try
             {
-                var order = await _appDbContext.Orders.FindAsync(id);
+                var order = await _appDbContext.Orders.Include(o => o.OrderItems).FirstOrDefaultAsync(o => o.Id == id);
 
                 if (order == null)
                 {
                     return false;
                 }
 
+                _appDbContext.OrderItems.RemoveRange(order.OrderItems);
                 _appDbContext.Orders.Remove(order);
 
                 var result = await _appDbContext.SaveChangesAsync();
@@ -71,18 +71,16 @@ namespace OrderManagement.Repository
                 throw new ArgumentException("PageNumber must be greater than 0.");
             }
 
-
             try
             {
                 return await _appDbContext.Orders
                                 .Skip((PageNumber - 1) * PageSize)
                                 .Take(PageSize)
                                 .Include(o => o.OrderItems).AsNoTracking()
-                                    .ToListAsync();
+                                .ToListAsync();
             }
             catch (Exception)
             {
-
                 throw;
             }
 
@@ -93,7 +91,7 @@ namespace OrderManagement.Repository
         {
             try
             {
-                return await _appDbContext.Orders.Include(o => o.Id).FirstOrDefaultAsync(o => o.Id == id);
+                return await _appDbContext.Orders.Include(o => o.OrderItems).FirstOrDefaultAsync(o => o.Id == id);
 
             }
             catch (Exception)
@@ -103,11 +101,36 @@ namespace OrderManagement.Repository
             }
         }
 
-        public async Task<bool> Update(Order entity)
+        public async Task<bool> Update(int id, Order entity)
         {
             try
             {
-                var data = _appDbContext.Orders.Update(entity);
+                if (id <= 0) throw new ArgumentException("Invalid ID");
+                if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+                var existingOrder = await _appDbContext.Orders
+                                                     .Include(o => o.OrderItems)
+                                                     .FirstOrDefaultAsync(o => o.Id == id);
+
+                if (existingOrder == null) throw new ArgumentException("Order not found");
+                if (entity.Id != existingOrder.Id) throw new ArgumentException("Cannot change Order ID");
+
+                existingOrder.CustomerName = entity.CustomerName;
+                existingOrder.CreatedAt = entity.CreatedAt;
+                existingOrder.Status = entity.Status;
+
+                foreach (var incomingItem in entity.OrderItems)
+                {
+                    var existingItem = existingOrder.OrderItems.FirstOrDefault(x => x.Id == incomingItem.Id);
+
+                    if (existingItem != null)
+                    {
+                        existingItem.Price = incomingItem.Price;
+                        existingItem.ProductName = incomingItem.ProductName;
+                        existingItem.Quantity = incomingItem.Quantity;
+                    }
+                }
+
                 await _appDbContext.SaveChangesAsync();
 
                 return true;
@@ -116,7 +139,6 @@ namespace OrderManagement.Repository
             {
                 throw;
             }
-           
         }
     }
 }

@@ -22,8 +22,6 @@ namespace OrderManagement.Model
         [ForeignKey("Order")]
         [Required(ErrorMessage = "OrderId is required.")]
         public int OrderId { get; set; }
-
-        // public Order? Order { get; set; } = null;   
     }
 }
 

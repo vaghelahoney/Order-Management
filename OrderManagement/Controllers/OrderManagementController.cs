@@ -89,7 +89,7 @@ namespace OrderManagement.Controllers
                 return BadRequest("Invalid order data.");
             }
 
-            var data = await _orderManagemenRepository.Update(order);
+            var data = await _orderManagemenRepository.Update(order.Id, order);
             return Ok(data);
         }
     }
