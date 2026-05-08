@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OrderManagement.Dto;
 using OrderManagement.IRepository;
 using OrderManagement.Model;
 
@@ -29,7 +30,7 @@ namespace OrderManagement.Controllers
         }
 
         [HttpPost("CreateOrder")]
-        public async Task<IActionResult> CreateOrder([FromBody] Order order )
+        public async Task<IActionResult> CreateOrder([FromBody] OrderDto order )
         {
             try
             {
@@ -37,7 +38,7 @@ namespace OrderManagement.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                if (order.OrderItems == null || !order.OrderItems.Any())
+                if (order.OrderItemsDto == null || !order.OrderItemsDto.Any())
                 {
                     return BadRequest("Order must contain at least one item.");
                 }
@@ -58,8 +59,6 @@ namespace OrderManagement.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOrderById(int id)
         {
-           
-
             if (id <= 0)
             {
                 return BadRequest();
@@ -82,7 +81,7 @@ namespace OrderManagement.Controllers
 
 
         [HttpPut]
-        public async Task<IActionResult> UpdateOrder([FromBody] Order order)
+        public async Task<IActionResult> UpdateOrder([FromBody] OrderDto order)
         {
             if (order == null || order.Id <= 0)
             {
