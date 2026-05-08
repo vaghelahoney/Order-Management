@@ -196,6 +196,7 @@
       },
       "OrderItem": {
         "required": [
+          "orderId",
           "price",
           "productName",
           "quantity"
@@ -219,6 +220,10 @@
           "price": {
             "type": "number",
             "format": "double"
+          },
+          "orderId": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
