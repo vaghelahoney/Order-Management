@@ -1,5 +1,6 @@
 ﻿using OrderManagement.Model;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace OrderManagement.Dto
 {
@@ -14,6 +15,7 @@ namespace OrderManagement.Dto
 
         public bool Status { get; set; }
 
+        [JsonPropertyName("OrderItems")]
         public List<OrderItemDto> OrderItemsDto { get; set; } = new List<OrderItemDto>();
     }
 }

@@ -99,8 +99,11 @@ namespace OrderManagement.Repository
             }).ToList();
 
         }
-        public async Task<IEnumerable<Order>> GetAllWithdtAsync(int PageNumber, int PageSize)
+        public async Task<IEnumerable<Order>> GetAllWithdtAsync(int PageNumber = 1, int PageSize = 10)
         {
+            PageNumber = 1;
+            PageSize = 10;
+
             if (PageNumber <= 0)
             {
                 throw new ArgumentException("PageNumber must be greater than 0.");

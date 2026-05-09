@@ -56,7 +56,7 @@ namespace OrderManagement.Controllers
         }
 
 
-        [HttpGet("{id}")]
+        [HttpGet("GetOrderById/{id}")]
         public async Task<IActionResult> GetOrderById(int id)
         {
             if (id <= 0)
@@ -67,7 +67,7 @@ namespace OrderManagement.Controllers
             return Ok(data);
         }
 
-        [HttpDelete]
+        [HttpDelete("DeleteOrder/{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
 
