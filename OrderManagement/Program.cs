@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using OrderManagement;
 using OrderManagement.IRepository;
+using OrderManagement.IService;
 using OrderManagement.Repository;
+using OrderManagement.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +19,9 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AppDbContext>(options =>
       options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection")));
 
+builder.Services.AddScoped<IOrdeService, OrderService>();
 builder.Services.AddScoped<IOrderManagemenRepository, OrderManagemenRepository>();
+builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddCors(options =>
 {

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OrderManagement.Dto;
 using OrderManagement.IRepository;
+using OrderManagement.IService;
 using OrderManagement.Model;
 
 namespace OrderManagement.Controllers
@@ -11,21 +12,21 @@ namespace OrderManagement.Controllers
     [ApiController]
     public class OrderManagementController : ControllerBase
     {
-        private readonly IOrderManagemenRepository _orderManagemenRepository;  
+        private readonly IOrdeService _ordeService;  
         
-        public OrderManagementController(IOrderManagemenRepository orderManagemenRepository)
+        public OrderManagementController(IOrdeService ordeService)
         {
-            _orderManagemenRepository = orderManagemenRepository;
+            _ordeService = ordeService;
         }
 
         [HttpGet("GetOrders")]
         public async Task<IActionResult> GetOrders([FromQuery] Pagination pagination)
         {
-            if (pagination.PageNumber <= 0 && pagination.PageSize <= 0)
+            if (pagination.PageNumber <= 0 || pagination.PageSize <= 0)
             {
                 return BadRequest();
             }
-            var data  = await _orderManagemenRepository.GetAllAsync(pagination.PageNumber, pagination.PageSize);
+            var data  = await _ordeService.GetAllOrderAsync(pagination.PageNumber, pagination.PageSize);
             return Ok(data);
         }
 
@@ -43,7 +44,7 @@ namespace OrderManagement.Controllers
                     return BadRequest("Order must contain at least one item.");
                 }
 
-                var data = await _orderManagemenRepository.AddAsync(order);
+                var data = await _ordeService.AddOrderAsync(order);
                 return Ok(data);
 
             }
@@ -63,7 +64,7 @@ namespace OrderManagement.Controllers
             {
                 return BadRequest();
             }
-            var data = await _orderManagemenRepository.GetByIdAsync(id);
+            var data = await _ordeService.GetByOrderIdAsync(id);
             return Ok(data);
         }
 
@@ -75,7 +76,7 @@ namespace OrderManagement.Controllers
             {
                 return BadRequest();
             }
-            var data = await _orderManagemenRepository.DeleteOrder(id) ;
+            var data = await _ordeService.DeleteOrderAsync(id) ;
             return Ok(data);
         }
 
@@ -88,7 +89,7 @@ namespace OrderManagement.Controllers
                 return BadRequest("Invalid order data.");
             }
 
-            var data = await _orderManagemenRepository.Update(order.Id, order);
+            var data = await _ordeService.UpdateOrderAsync(order.Id, order);
             return Ok(data);
         }
     }

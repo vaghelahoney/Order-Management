@@ -17,29 +17,17 @@ namespace OrderManagement.Repository
         }
 
 
-        public async Task<OrderDto> AddAsync(OrderDto entity)
+        public async Task<Order> AddAsync(Order entity)
         {
             try
             {
-                Order order = new Order
-                {
-                    CustomerName = entity.CustomerName,
-                    CreatedAt = entity.CreatedAt,
-                    Status = entity.Status,
-                    OrderItems = entity.OrderItemsDto.Select(oi => new OrderItem
-                    {
-                        ProductName = oi.ProductName,
-                        Quantity = oi.Quantity,
-                        Price = oi.Price
-                    }).ToList()
-                };
 
                 if (entity == null)
                 {
                     throw new ArgumentNullException(nameof(entity));
                 }
 
-                await _appDbContext.Orders.AddAsync(order);
+                await _appDbContext.Orders.AddAsync(entity);
 
                 await _appDbContext.SaveChangesAsync();
 
@@ -77,33 +65,14 @@ namespace OrderManagement.Repository
             }
         }
 
-        public async Task<IEnumerable<OrderDto>> GetAllAsync(int PageNumber, int PageSize)
+        public async Task<IEnumerable<Order>> GetAllAsync(int PageNumber, int PageSize)
         {
 
-            var data = await GetAllWithdtAsync(PageNumber, PageSize);
-
-            return data.Select(order => new OrderDto
-            {
-                Id = order.Id,
-                CustomerName = order.CustomerName,
-                CreatedAt = order.CreatedAt,
-                Status = order.Status,
-                OrderItemsDto = order.OrderItems.Select(oi => new OrderItemDto
-                {
-                    Id = oi.Id,
-                    ProductName = oi.ProductName,
-                    Quantity = oi.Quantity,
-                    Price = oi.Price,
-                    OrderId = oi.OrderId
-                }).ToList()
-            }).ToList();
-
+            return await GetAllWithdtAsync(PageNumber, PageSize);
         }
-        public async Task<IEnumerable<Order>> GetAllWithdtAsync(int PageNumber = 1, int PageSize = 10)
+        public async Task<IEnumerable<Order>> GetAllWithdtAsync(int PageNumber , int PageSize)
         {
-            PageNumber = 1;
-            PageSize = 10;
-
+         
             if (PageNumber <= 0)
             {
                 throw new ArgumentException("PageNumber must be greater than 0.");
@@ -126,31 +95,11 @@ namespace OrderManagement.Repository
 
 
 
-        public async Task<OrderDto> GetByIdAsync(int id)
+        public async Task<Order> GetByIdAsync(int id)
         {
             try
             {
-                var order = await _appDbContext.Orders.Include(o => o.OrderItems).FirstOrDefaultAsync(o => o.Id == id);
-                if (order == null)
-                {
-                    return new OrderDto();
-                }
-
-                return new OrderDto
-                {
-                    Id = order.Id,
-                    CustomerName = order.CustomerName,
-                    CreatedAt = order.CreatedAt,
-                    Status = order.Status,
-                    OrderItemsDto = order.OrderItems.Select(oi => new OrderItemDto
-                    {
-                        Id = oi.Id,
-                        ProductName = oi.ProductName,
-                        Quantity = oi.Quantity,
-                        Price = oi.Price,
-                        OrderId = oi.OrderId
-                    }).ToList()
-                };
+                return await _appDbContext.Orders.Include(o => o.OrderItems).FirstOrDefaultAsync(o => o.Id == id);
             }
             catch (Exception)
             {
@@ -159,7 +108,7 @@ namespace OrderManagement.Repository
             }
         }
 
-        public async Task<bool> Update(int id, OrderDto entity)
+        public async Task<bool> Update(int id, Order entity)
         {
             try
             {
@@ -171,13 +120,12 @@ namespace OrderManagement.Repository
                                                      .FirstOrDefaultAsync(o => o.Id == id);
 
                 if (existingOrder == null) throw new ArgumentException("Order not found");
-                if (entity.Id != existingOrder.Id) throw new ArgumentException("Cannot change Order ID");
 
                 existingOrder.CustomerName = entity.CustomerName;
                 existingOrder.CreatedAt = entity.CreatedAt;
                 existingOrder.Status = entity.Status;
 
-                foreach (var incomingItem in entity.OrderItemsDto)
+                foreach (var incomingItem in entity.OrderItems)
                 {
                     var existingItem = existingOrder.OrderItems.FirstOrDefault(x => x.Id == incomingItem.Id);
 
