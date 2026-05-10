@@ -8,7 +8,9 @@ namespace OrderManagement.Mapping
     {
         public OrderMapping()
         {
-            CreateMap<OrderDto, Order>().ReverseMap();
+            CreateMap<OrderDto, Order>()
+            .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItemsDto))
+            .ReverseMap();
 
             CreateMap<OrderItemDto, OrderItem>().ReverseMap();
         }

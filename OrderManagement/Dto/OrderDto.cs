@@ -7,7 +7,7 @@ namespace OrderManagement.Dto
     public record OrderDto
     {
 
-        public int Id { get; set; }
+        public int Id {     get; set; }
 
         public string? CustomerName { get; set; }
 
