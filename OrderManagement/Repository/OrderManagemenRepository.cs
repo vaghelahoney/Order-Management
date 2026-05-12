@@ -21,7 +21,6 @@ namespace OrderManagement.Repository
         {
             try
             {
-
                 if (entity == null)
                 {
                     throw new ArgumentNullException(nameof(entity));
