@@ -1,22 +1,6 @@
 [
   {
     "ContainingType": "OrderManagement.Controllers.OrderManagementController",
-    "Method": "CreateOrder",
-    "RelativePath": "api/OrderManagement",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "order",
-        "Type": "OrderManagement.Model.Order",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "OrderManagement.Controllers.OrderManagementController",
     "Method": "UpdateOrder",
     "RelativePath": "api/OrderManagement",
     "HttpMethod": "PUT",
@@ -25,7 +9,7 @@
     "Parameters": [
       {
         "Name": "order",
-        "Type": "OrderManagement.Model.Order",
+        "Type": "OrderManagement.Dto.OrderDto",
         "IsRequired": true
       }
     ],
@@ -33,8 +17,50 @@
   },
   {
     "ContainingType": "OrderManagement.Controllers.OrderManagementController",
+    "Method": "CreateOrder",
+    "RelativePath": "api/OrderManagement/CreateOrder",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "order",
+        "Type": "OrderManagement.Dto.OrderDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "OrderManagement.Controllers.OrderManagementController",
+    "Method": "DeleteOrder",
+    "RelativePath": "api/OrderManagement/DeleteOrder/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "OrderManagement.Controllers.OrderManagementController",
+    "Method": "GetCounties",
+    "RelativePath": "api/OrderManagement/GetCounties",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "OrderManagement.Controllers.OrderManagementController",
     "Method": "GetOrderById",
-    "RelativePath": "api/OrderManagement/{id}",
+    "RelativePath": "api/OrderManagement/GetOrderById/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -56,9 +82,14 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "pagination",
-        "Type": "OrderManagement.Model.Pagination",
-        "IsRequired": true
+        "Name": "PageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

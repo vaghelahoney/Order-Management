@@ -10,25 +10,24 @@
         "tags": [
           "OrderManagement"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Pagination"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Pagination"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Pagination"
-              }
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -36,7 +35,19 @@
         }
       }
     },
-    "/api/OrderManagement": {
+    "/api/OrderManagement/GetCounties": {
+      "get": {
+        "tags": [
+          "OrderManagement"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/OrderManagement/CreateOrder": {
       "post": {
         "tags": [
           "OrderManagement"
@@ -45,46 +56,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Order"
+                "$ref": "#/components/schemas/OrderDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Order"
+                "$ref": "#/components/schemas/OrderDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Order"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "OrderManagement"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Order"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Order"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Order"
+                "$ref": "#/components/schemas/OrderDto"
               }
             }
           }
@@ -96,7 +78,7 @@
         }
       }
     },
-    "/api/OrderManagement/{id}": {
+    "/api/OrderManagement/GetOrderById/{id}": {
       "get": {
         "tags": [
           "OrderManagement"
@@ -112,6 +94,60 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/OrderManagement/DeleteOrder/{id}": {
+      "delete": {
+        "tags": [
+          "OrderManagement"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/OrderManagement": {
+      "put": {
+        "tags": [
+          "OrderManagement"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -161,12 +197,7 @@
   },
   "components": {
     "schemas": {
-      "Order": {
-        "required": [
-          "createdAt",
-          "customerName",
-          "status"
-        ],
+      "OrderDto": {
         "type": "object",
         "properties": {
           "id": {
@@ -174,8 +205,8 @@
             "format": "int32"
           },
           "customerName": {
-            "minLength": 1,
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "createdAt": {
             "type": "string",
@@ -184,23 +215,17 @@
           "status": {
             "type": "boolean"
           },
-          "orderItems": {
+          "OrderItems": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/OrderItem"
+              "$ref": "#/components/schemas/OrderItemDto"
             },
             "nullable": true
           }
         },
         "additionalProperties": false
       },
-      "OrderItem": {
-        "required": [
-          "orderId",
-          "price",
-          "productName",
-          "quantity"
-        ],
+      "OrderItemDto": {
         "type": "object",
         "properties": {
           "id": {
@@ -208,12 +233,10 @@
             "format": "int32"
           },
           "productName": {
-            "minLength": 1,
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "quantity": {
-            "maximum": 2147483647,
-            "minimum": 0,
             "type": "integer",
             "format": "int32"
           },
@@ -224,20 +247,14 @@
           "orderId": {
             "type": "integer",
             "format": "int32"
-          }
-        },
-        "additionalProperties": false
-      },
-      "Pagination": {
-        "type": "object",
-        "properties": {
-          "pageNumber": {
+          },
+          "countryId": {
             "type": "integer",
             "format": "int32"
           },
-          "pageSize": {
-            "type": "integer",
-            "format": "int32"
+          "countryName": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
