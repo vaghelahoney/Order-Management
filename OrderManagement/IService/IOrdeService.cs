@@ -1,4 +1,6 @@
 ﻿using OrderManagement.Dto;
+using OrderManagement.Mapping;
+using OrderManagement.Model;
 
 namespace OrderManagement.IService
 {
@@ -13,5 +15,7 @@ namespace OrderManagement.IService
         Task<bool> UpdateOrderAsync(int id, OrderDto entity);
 
         Task<bool> DeleteOrderAsync(int id);
+
+        Task<IEnumerable<CountyDto>> GetallCounty();
     }
 }

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using OrderManagement.Dto;
 using OrderManagement.IRepository;
 using OrderManagement.Model;
@@ -19,8 +19,10 @@ namespace OrderManagement.Repository
 
         public async Task<Order> AddAsync(Order entity)
         {
+            using var transaction = await _appDbContext.Database.BeginTransactionAsync();
             try
             {
+
                 if (entity == null)
                 {
                     throw new ArgumentNullException(nameof(entity));
@@ -29,12 +31,14 @@ namespace OrderManagement.Repository
                 await _appDbContext.Orders.AddAsync(entity);
 
                 await _appDbContext.SaveChangesAsync();
+                
+                await transaction.CommitAsync();
 
                 return entity;
             }
             catch (Exception)
             {
-
+                await transaction.RollbackAsync();
                 throw;
             }
 
@@ -69,6 +73,21 @@ namespace OrderManagement.Repository
 
             return await GetAllWithdtAsync(PageNumber, PageSize);
         }
+
+        public async Task<IEnumerable<County>> GetallCounty()
+        {
+            try
+            {
+
+            return await _appDbContext.Countries.ToListAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public async Task<IEnumerable<Order>> GetAllWithdtAsync(int PageNumber , int PageSize)
         {
          
@@ -82,7 +101,7 @@ namespace OrderManagement.Repository
                 return await _appDbContext.Orders
                                 .Skip((PageNumber - 1) * PageSize)
                                 .Take(PageSize)
-                                .Include(o => o.OrderItems).AsNoTracking()
+                                .Include(o => o.OrderItems).ThenInclude(c => c.Country).AsNoTracking()
                                 .ToListAsync();
             }
             catch (Exception)
@@ -98,7 +117,7 @@ namespace OrderManagement.Repository
         {
             try
             {
-                return await _appDbContext.Orders.Include(o => o.OrderItems).FirstOrDefaultAsync(o => o.Id == id);
+                return await _appDbContext.Orders.Include(o => o.OrderItems).ThenInclude(c=>c.Country).FirstOrDefaultAsync(o => o.Id == id);
             }
             catch (Exception)
             {
@@ -130,6 +149,7 @@ namespace OrderManagement.Repository
 
                     if (existingItem != null)
                     {
+                        existingItem.CountryId = existingItem.CountryId;
                         existingItem.Price = incomingItem.Price;
                         existingItem.ProductName = incomingItem.ProductName;
                         existingItem.Quantity = incomingItem.Quantity;

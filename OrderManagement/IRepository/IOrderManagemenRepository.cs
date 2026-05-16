@@ -15,5 +15,6 @@ namespace OrderManagement.IRepository
 
         Task<bool> DeleteOrder(int id);
 
+        Task<IEnumerable<County>> GetallCounty();
     }
 }

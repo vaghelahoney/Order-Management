@@ -13,6 +13,8 @@ namespace OrderManagement.Mapping
             .ReverseMap();
 
             CreateMap<OrderItemDto, OrderItem>().ReverseMap();
+            CreateMap<CountyDto, County>().ReverseMap();
+
         }
     }
 }

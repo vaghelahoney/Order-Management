@@ -22,6 +22,11 @@ namespace OrderManagement.Model
         [ForeignKey("Order")]
         [Required(ErrorMessage = "OrderId is required.")]
         public int OrderId { get; set; }
+
+        public int CountryId { get; set; }
+        
+        [ForeignKey("CountryId")]
+        public County? Country { get; set; }
     }
 }
 

@@ -13,16 +13,7 @@ namespace OrderManagement
         public DbSet<Order> Orders { get; set; }
 
         public DbSet<OrderItem> OrderItems { get; set; }
+
+        public DbSet<County> Countries { get; set; }
     }
 }
-
-
-//protected override void OnModelCreating(ModelBuilder modelBuilder)
-//{
-//    modelBuilder.Entity<Order>()
-//        .HasMany(o => o.OrderItems)    
-//        .WithOne(oi => oi.Order)      
-//        .HasForeignKey(oi => oi.OrderId) 
-//        .OnDelete(DeleteBehavior.Cascade);
-
-//}

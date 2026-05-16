@@ -1,4 +1,6 @@
-﻿using OrderManagement.Model;
+using OrderManagement.Mapping;
+using OrderManagement.Migrations;
+using OrderManagement.Model;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -17,5 +19,6 @@ namespace OrderManagement.Dto
 
         [JsonPropertyName("OrderItems")]
         public List<OrderItemDto> OrderItemsDto { get; set; } = new List<OrderItemDto>();
+
     }
 }

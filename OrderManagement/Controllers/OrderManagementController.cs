@@ -30,6 +30,13 @@ namespace OrderManagement.Controllers
             return Ok(data);
         }
 
+        [HttpGet("GetCounties")]
+        public async Task<IActionResult> GetCounties()
+        {
+            var counties = await _ordeService.GetallCounty();
+            return Ok(counties);
+        }
+
         [HttpPost("CreateOrder")]
         public async Task<IActionResult> CreateOrder([FromBody] OrderDto order )
         {

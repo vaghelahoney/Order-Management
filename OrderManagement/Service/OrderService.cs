@@ -1,7 +1,9 @@
-﻿using AutoMapper;
+using AutoMapper;
 using OrderManagement.Dto;
 using OrderManagement.IRepository;
 using OrderManagement.IService;
+using OrderManagement.Mapping;
+using OrderManagement.Migrations;
 using OrderManagement.Model;
 using OrderManagement.Repository;
 
@@ -20,20 +22,7 @@ namespace OrderManagement.Service
 
         public async Task<OrderDto> AddOrderAsync(OrderDto entity)
         {
-            //Order order = new Order
-            //{
-            //    Id = entity.Id,
-            //    CustomerName = entity.CustomerName,
-            //    CreatedAt = entity.CreatedAt,
-            //    OrderItems = entity.OrderItemsDto.Select(s => new OrderItem
-            //    {
-            //        Id = s.Id,
-            //        OrderId = s.OrderId,
-            //        Price = s.Price,
-            //        ProductName = s.ProductName,
-            //        Quantity = s.Quantity
-            //    }).ToList()
-            //};
+           
             Order order = _mapper.Map<Order>(entity);
 
             await _orderManagemenRepository.AddAsync(order);
@@ -45,6 +34,12 @@ namespace OrderManagement.Service
         public async Task<bool> DeleteOrderAsync(int id)
         {
             return await _orderManagemenRepository.DeleteOrder(id);
+        }
+
+        public async Task<IEnumerable<CountyDto>> GetallCounty()
+        {
+            var counties = await _orderManagemenRepository.GetallCounty();
+          return  counties.Select(c => _mapper.Map<CountyDto>(c));
         }
 
         public async Task<IEnumerable<OrderDto>> GetAllOrderAsync(int PageNumber, int PageSize)
@@ -66,7 +61,9 @@ namespace OrderManagement.Service
                     ProductName = a.ProductName,
                     Quantity = a.Quantity,
                     Price = a.Price,
-                    OrderId = a.OrderId
+                    OrderId = a.OrderId,
+                    CountryId = a.CountryId,
+                    CountryName = a.Country?.CountryName
                 }).ToList()
             }).ToList();
         }
@@ -81,37 +78,24 @@ namespace OrderManagement.Service
                 CustomerName = data.CustomerName,
                 Status = data.Status,
                 Id = data.Id,
+                
                 OrderItemsDto = data.OrderItems.Select(s => new OrderItemDto
                 {
                     Id = s.Id,
                     OrderId = s.OrderId,
                     Price = s.Price,
                     Quantity = s.Quantity,
-                    ProductName = s.ProductName
+                    ProductName = s.ProductName,
+                    CountryId = s.CountryId,
+                    CountryName = s.Country?.CountryName
                 }).ToList()
             };
         }
 
         public async Task<bool> UpdateOrderAsync(int id, OrderDto entity)
         {
-            //var Order = new Order
-            //{
-            //    CreatedAt = entity.CreatedAt,
-            //    CustomerName = entity.CustomerName,
-            //    Id = entity.Id,
-            //    Status = entity.Status,
-            //    OrderItems = entity.OrderItemsDto.Select(x => new OrderItem
-            //    {
-            //        Id = x.Id,
-            //        Price = x.Price,
-            //        OrderId = x.OrderId,
-            //        Quantity = x.Quantity,
-            //        ProductName = x.ProductName
-            //    }).ToList()
-            //};
-
+            
             Order order = _mapper.Map<Order>(entity);
-
 
             return await _orderManagemenRepository.Update(id, order);
         }
